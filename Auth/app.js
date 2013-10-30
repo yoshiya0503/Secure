@@ -28,6 +28,7 @@ app.use(require('stylus').middleware(__dirname + '/public'));
 app.use(express.static(path.join(__dirname, 'public')));
 
 var auth = require('./routes/auth');
+var bbs = require('./routes/bbs');
 app.get('/', auth.getLoginform);
 app.get('/login.html', auth.getLoginform);
 app.post('/login.html', auth.login);
@@ -39,6 +40,10 @@ app.post('/register.html', auth.regist);
 
 app.get('/confirm.html', auth.getConfirmform);
 app.post('/confirm.html', auth.confirm);
+
+app.get('/bbs.html', bbs.checkLoggedIn, bbs.index);
+app.post('/bbs.html', bbs.post);
+
 
 http.createServer(app).listen(app.get('port'), function(){
     console.log('Express server listening on port ' + app.get('port'));
