@@ -1,0 +1,22 @@
+extends header
+
+block content
+
+    name = user.name
+    password = user.password
+    type = user.type
+    
+    h1 Login MiddleWare
+    for msg in message
+        p= msg
+    form(action='/login.html',method='POST')
+        p
+            input(type='radio', name='user[type]', value='guest',checked=type=='guest')
+            ゲスト
+            input(type='radio', name='user[type]', value='admin',checked=type=='admin')
+            管理者
+        p NAME:
+            input(type='text',name='user[name]', value=name)
+        p PASS:
+            input(type='password', name='user[password]', value=password)
+        input(type='submit')

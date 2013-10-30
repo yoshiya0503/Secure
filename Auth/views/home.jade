@@ -1,0 +1,15 @@
+extends header
+
+block content
+
+    name = user.name
+    password = user.password
+    type = user.type
+
+    h1 Login Middleware
+    h2 ようこそエテ公へ
+    form(method='POST', action='/logout.html')
+            input(name='_method', type='hidden', value='DELETE')
+            p ログインユーザー : #{name}
+                a(href='javascript:', onClick='forms[0].submit()') [ログアウト]
+ 
