@@ -11,10 +11,13 @@
  * 新規ユーザー登録のためのregistrationミドルウェア
  * も設計したい
  */
+/*
 var user = {
     name : 'admin',
     password : '0906'
 };
+*/
+var authService = require('../../models/auth.js');
 
 /**
  * ログイン画面を表示する関数
@@ -28,11 +31,7 @@ exports.getLoginform = function (req, res) {
     var user_info = req.session.user || {name : '', password : '', type : ''};
     var message = req.flash();
    
-    if (user_info.type === 'guest' && user_info.name) {
-        return res.redirect('/login_result.html');
-    }
-
-    validate(user_info, function (valid) {
+    authService.validateLogin(user_info, function (valid) {
         if (valid) {
             return res.redirect('/login_result.html');
         }
@@ -52,39 +51,28 @@ exports.login = function (req, res) {
     //セッションにユーザーの情報を保存する
     var user_info = req.body.user;
     req.session.user = user_info;
-    
-    if (!user_info.type) {
-        req.flash('error', '管理者かゲストが入力してください');
-        return res.redirect('/login.html');
-    }
 
     //管理かゲストかで処理内容が異なる
-    if (user_info.type === 'guest') {
-        if (!user_info.name) {
-            req.flash('error', '名前を入力してください');
-            return res.redirect('/login.html');
-        }
-        return res.redirect('/login_result.html');
-    } else if (user_info.type === 'admin') {
-        if (!user_info.name && !user_info.password) {
-            req.flash('error', '名前を入力してください');
-            req.flash('error', 'パスワードを入力してください');
-            return res.redirect('/login.html');
-        }
-        if (!user_info.name) {
-            req.flash('error', '名前を入力してください');
-            return res.redirect('/login.html');
-        }
-        if (!user_info.password) {
-            req.flash('error', 'パスワードを入力してください');
-            return res.redirect('/login.html');
-        }
-        if (user_info.name !== user.name || user_info.password !== user.password) {
-            req.flash('error', 'ログイン情報が不正です');
-            return res.redirect('/login.html'); 
-        }
-        return res.redirect('/login_result.html');
+    if (!user_info.name && !user_info.password) {
+        req.flash('error', '名前を入力してください');
+        req.flash('error', 'パスワードを入力してください');
+        return res.redirect('/login.html');
     }
+    if (!user_info.name) {
+        req.flash('error', '名前を入力してください');
+        return res.redirect('/login.html');
+    }
+    if (!user_info.password) {
+        req.flash('error', 'パスワードを入力してください');
+        return res.redirect('/login.html');
+    }
+    authService.validateLogin(user_info, function (result) {
+        if (!result) {
+            req.flash('error', 'ログイン情報が不正デス');
+            return res.redirect('/login.html');
+        }
+        return res.redirect('/login_result.html');
+    });
 };
 
 /**
@@ -112,6 +100,57 @@ exports.logout = function (req, res) {
     delete req.session.user;
     res.redirect('/');
 };
+
+/**
+ * 登録画面の取得
+ * @param {Object} req
+ * @param {Object} res
+ */
+exports.getRegisterform = function (req, res) {
+    return res.render('regist'); 
+}
+
+/**
+ * 登録処理
+ * @param {Object} req
+ * @param {Object} res
+ */
+exports.regist = function (req, res) {
+    authService.validateRegist(req.body.user, function (result) {
+        if (result.length !== 0) {
+                req.flash('error', 'そのメールアドレスは重複しています');
+                return res.redirect('/register.html');
+        }
+        req.session.regist_user = req.body.user;
+        return res.redirect('/confirm.html');
+    });
+};
+
+exports.getConfirmform = function (req, res) {
+    var user_info = req.session.user || {name : '', password : ''};
+    res.render('confirm',{user : user_info});
+}
+
+exports.confirm = function (req, res) {
+    /**
+     * TODO yes or noで処理を分ける
+     *
+     */
+
+    //noの場合
+    //req.session.destroy;
+    //res.redirect('register.html');
+
+    //yesの場合
+    authService.register(req.session.regist_user, function (result) {
+        /**
+         *TODO bbsへ飛ばす
+         *
+         */
+        req.session.destroy;
+        res.redirect('/login.html');
+    });
+}
 
 /**
  * ユーザーデータを判別する関数

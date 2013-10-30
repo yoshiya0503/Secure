@@ -1,0 +1,9 @@
+extends header
+
+block content
+
+    h1 Confirm
+    p 以上の内容でよろしいですか？
+    form(action='/confirm.html',method='POST')
+        button(name='はい', type='submit', value=true) はい
+        button(name='いいえ', type='submit', value=false) いいえ

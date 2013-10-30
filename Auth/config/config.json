@@ -1,0 +1,9 @@
+{
+    "secret_key" : "lasjdoifhwauheghawkjerhgfhawed",
+    "mysql" : {
+        "host" : "localhost",
+        "database" : "security",
+        "user" : "node",
+        "password" : "Wakimikoreimu1"
+    }
+}

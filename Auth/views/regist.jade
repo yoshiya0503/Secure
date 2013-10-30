@@ -1,0 +1,15 @@
+extends header
+
+block content
+
+    h1 Register
+    //for msg in message
+        p= msg
+    form(action='/register.html',method='POST')
+        p MAIL:
+            input(type='text',name='user[mail]', value=mail)
+        p NAME:
+            input(type='text',name='user[name]', value=name)
+        p PASS:
+            input(type='password', name='user[password]', value=password)
+        input(type='submit')
