@@ -2,15 +2,15 @@ extends header
 
 block content
 
-    name = user.name
+    mail = user.mail
     password = user.password
     
     h1 Login MiddleWare
     for msg in message
         p= msg
     form(action='/login.html',method='POST')
-        p NAME:
-            input(type='text',name='user[name]', value=name)
+        p MAIL:
+            input(type='text',name='user[mail]', value=mail)
         p PASS:
             input(type='password', name='user[password]', value=password)
         input(type='submit')

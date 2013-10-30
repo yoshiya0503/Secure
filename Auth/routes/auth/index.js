@@ -11,12 +11,6 @@
  * 新規ユーザー登録のためのregistrationミドルウェア
  * も設計したい
  */
-/*
-var user = {
-    name : 'admin',
-    password : '0906'
-};
-*/
 var authService = require('../../models/auth.js');
 
 /**
@@ -28,9 +22,10 @@ var authService = require('../../models/auth.js');
  */
 exports.getLoginform = function (req, res) {
     
-    var user_info = req.session.user || {name : '', password : '', type : ''};
+    var user_info = req.session.user || {name : '', mail : '', password : ''};
     var message = req.flash();
    
+    console.log(req.session);
     authService.validateLogin(user_info, function (valid) {
         if (valid) {
             return res.redirect('/login_result.html');
@@ -52,14 +47,14 @@ exports.login = function (req, res) {
     var user_info = req.body.user;
     req.session.user = user_info;
 
-    //管理かゲストかで処理内容が異なる
-    if (!user_info.name && !user_info.password) {
-        req.flash('error', '名前を入力してください');
+    console.log(req.session.user);
+    if (!user_info.mail && !user_info.password) {
+        req.flash('error', 'メールアドレスを入力してください');
         req.flash('error', 'パスワードを入力してください');
         return res.redirect('/login.html');
     }
-    if (!user_info.name) {
-        req.flash('error', '名前を入力してください');
+    if (!user_info.mail) {
+        req.flash('error', 'メールアドレスを入力してください');
         return res.redirect('/login.html');
     }
     if (!user_info.password) {
@@ -83,7 +78,7 @@ exports.login = function (req, res) {
  */
 exports.getHome = function (req, res) {
     if (req.session.user) {
-        var user_info = req.session.user || {name : '', password : ''};
+        var user_info = req.session.user || {name : '', mail : '',password : ''};
         res.render('home', {user :user_info});
     } else {
         res.redirect('/login.html');
@@ -97,7 +92,7 @@ exports.getHome = function (req, res) {
  * @param {Object} res
  */
 exports.logout = function (req, res) {
-    delete req.session.user;
+    req.session.destroy();
     res.redirect('/');
 };
 
@@ -107,8 +102,9 @@ exports.logout = function (req, res) {
  * @param {Object} res
  */
 exports.getRegisterform = function (req, res) {
-    return res.render('regist'); 
-}
+    var message = req.flash(); 
+    return res.render('regist', {message : message}); 
+};
 
 /**
  * 登録処理
@@ -118,8 +114,8 @@ exports.getRegisterform = function (req, res) {
 exports.regist = function (req, res) {
     authService.validateRegist(req.body.user, function (result) {
         if (result.length !== 0) {
-                req.flash('error', 'そのメールアドレスは重複しています');
-                return res.redirect('/register.html');
+            req.flash('error', 'そのメールアドレスは重複しています');
+            return res.redirect('/register.html');
         }
         req.session.regist_user = req.body.user;
         return res.redirect('/confirm.html');
@@ -127,9 +123,9 @@ exports.regist = function (req, res) {
 };
 
 exports.getConfirmform = function (req, res) {
-    var user_info = req.session.user || {name : '', password : ''};
+    var user_info = req.session.regist_user || {name : '', mail : '', password : ''};
     res.render('confirm',{user : user_info});
-}
+};
 
 exports.confirm = function (req, res) {
     /**
@@ -147,19 +143,8 @@ exports.confirm = function (req, res) {
          *TODO bbsへ飛ばす
          *
          */
-        req.session.destroy;
+        req.session.destroy();
         res.redirect('/login.html');
     });
-}
-
-/**
- * ユーザーデータを判別する関数
- * DBとのI/Oに備える
- * @param {Object} user_info name/password/type
- * @param {Function} callback
- *
- */
-var validate = function (user_info, callback) {
-    var valid = (user_info.name === user.name && user_info.password === user.password) ? true : false;
-    callback(valid);
 };
+

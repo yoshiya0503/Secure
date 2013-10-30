@@ -1,3 +1,10 @@
+/**
+ * @title authentification
+ * @author Yoshiya Ito <ito_yoshiya@cyberagent.co.jp>
+ * @author Hiroyuki Tachibana <tachibana_hiroyuki@syberagent.co.jp>
+ * @version 1.1
+ */
+
 var connection = require('./mysql/connect.js').connection;
 var key = require('../config/config.json').secret_key;
 var crypto = require('crypto');
@@ -25,17 +32,17 @@ exports.validateRegist = function(user, callback) {
     });
 };
 
+/**
+ * TODO やっぱり一つでよくね？
+ *
+ *
+ */
 exports.validateLogin = function (user, callback) {
 
-    /**
-     *TODO パラメータチェック
-     */
-    user.mail = user.name;
     connection.query('select * from user where mail = ?', [user.mail], function (err, result) {
         if (err) {
             console.log(err);
         }
-
         if (result.length === 0) {
             return callback(false);
         }
@@ -43,8 +50,8 @@ exports.validateLogin = function (user, callback) {
         var decipher = crypto.createDecipher('aes192', key);
         decipher.update(result[0].password,'hex', 'utf8');
         var decipheredText = decipher.final('utf8');
-        console.log(decipheredText);
-        var valid = (user.name === result[0].name && user.password === decipheredText) ? true : false;
+        var valid = (user.password === decipheredText) ? true : false;
+
         return callback(valid);
     });
 };
