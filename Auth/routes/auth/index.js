@@ -22,10 +22,9 @@ var authService = require('../../models/auth.js');
  */
 exports.getLoginform = function (req, res) {
     
-    var user_info = req.session.user || {name : '', mail : '', password : ''};
+    var user_info = req.session.form_info || {name : '', mail : '', password : ''};
     var message = req.flash();
    
-    console.log(req.session);
     authService.validateLogin(user_info, function (valid) {
         if (valid) {
             return res.redirect('/home.html');
@@ -44,28 +43,31 @@ exports.getLoginform = function (req, res) {
 exports.login = function (req, res) {
      
     //セッションにユーザーの情報を保存する
-    var user_info = req.body.user;
-    req.session.user = user_info;
+    var form_info = req.body.user;
+    req.session.form_info = form_info;
 
-    console.log(req.session.user);
-    if (!user_info.mail && !user_info.password) {
+    console.log(req.session.form_info);
+    if (!form_info.mail && !form_info.password) {
         req.flash('error', 'メールアドレスを入力してください');
         req.flash('error', 'パスワードを入力してください');
         return res.redirect('/login.html');
     }
-    if (!user_info.mail) {
+    if (!form_info.mail) {
         req.flash('error', 'メールアドレスを入力してください');
         return res.redirect('/login.html');
     }
-    if (!user_info.password) {
+    if (!form_info.password) {
         req.flash('error', 'パスワードを入力してください');
         return res.redirect('/login.html');
     }
-    authService.validateLogin(user_info, function (result) {
+    authService.validateLogin(form_info, function (result) {
         if (!result) {
             req.flash('error', 'ログイン情報が不正デス');
             return res.redirect('/login.html');
         }
+        //TODO
+        console.log(result);
+        req.session.user = result;
         return res.redirect('/home.html');
     });
 };
@@ -76,6 +78,7 @@ exports.login = function (req, res) {
  * @param {Object} req
  * @param {Object} res
  */
+/*
 exports.getHome = function (req, res) {
     if (req.session.user) {
         var user_info = req.session.user || {name : '', mail : '',password : ''};
@@ -84,7 +87,7 @@ exports.getHome = function (req, res) {
         res.redirect('/login.html');
     }
 };
-
+*/
 /**
  * ログアウトする関数
  * ログアウトするとログイン画面へリダイレクト

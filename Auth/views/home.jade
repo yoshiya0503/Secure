@@ -3,7 +3,6 @@ extends header
 block content
 
     //name = user.name
-    //password = user.password
 
     h1 Login Middleware
     h2 ようこそエテ公へ
@@ -11,12 +10,24 @@ block content
             input(name='_method', type='hidden', value='DELETE')
             p ログインユーザー : ここに名前
                 a(href='javascript:', onClick='forms[0].submit()') [ログアウト]
+
+    form(method='POST', action='/home.html')
+        input(name='post', type='textarea', rows='4',cols='40')
+        input(type='submit', value='送信')
+        input(type='reset', value='リセット')
  
     table(border=1)
         for post in posts
             name = post.name
             text = post.body
+            time = post.time
             tr 
                 th #{name}
+                th #{time}
             tr
-                td #{text}
+                td(class='text') #{text}
+    script
+        $(".text").each(function(){
+            //http、httpsなどで始まる文字列を正規表現でリンクに置換する
+            $(this).html( $(this).html().replace(/((http|https|ftp):\/\/[\w?=&.\/-;#~%-]+(?![\w\s?&.\/;#~%"=-]*>))/g, '<a href="$1">$1</a> ') );
+        });

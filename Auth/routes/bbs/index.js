@@ -46,8 +46,11 @@ exports.post = function(req, res) {
         req.flash('error', '本文が記載されていません');
         return res.redirect('/home.html');
     }
-    var postData = req.body.post;
-    postData.user = req.session.user;
+    var postData = {
+        user_id : req.session.user.id, 
+        body : req.body.post,
+    };
+    console.log(postData.user);
     bbsService.postData(postData, function(err, result) {
        if(err) {
            //TODO post失敗時のエラー処理

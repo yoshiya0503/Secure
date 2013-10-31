@@ -50,7 +50,7 @@ exports.validateLogin = function (user, callback) {
         var decipher = crypto.createDecipher('aes192', key);
         decipher.update(result[0].password,'hex', 'utf8');
         var decipheredText = decipher.final('utf8');
-        var valid = (user.password === decipheredText) ? true : false;
+        var valid = (user.password === decipheredText) ? {id : result[0].id, name : result[0].name} : false;
 
         return callback(valid);
     });

@@ -22,7 +22,7 @@ module.exports = new BbsService();
  * @param callback {Function}
  */
 BbsService.prototype.getPosts = function(callback) {
-    connection.query('SELECT  name, body FROM post JOIN user ON user.id = post.user_id', function (err, result) {
+    connection.query('SELECT  name, body, time FROM post JOIN user ON user.id = post.user_id order by time desc', function (err, result) {
         if (err) {
             console.log(err);
             return callback(err);
@@ -38,8 +38,8 @@ BbsService.prototype.getPosts = function(callback) {
  * session から　userIDを取得する
  * @param post {Object} 投稿されるオブジェクト
  */
-BbsService.prototype.postData = function(post){
-    connection.query('INSERT INTO post set ?', {user_id : post.user.id, body: post.body},function (err, result) {
+BbsService.prototype.postData = function(post, callback){
+    connection.query('INSERT INTO post set ?', {user_id : post.user_id, body: post.body},function (err, result) {
         if (err) {
             console.log(err);
             return callback(err);
