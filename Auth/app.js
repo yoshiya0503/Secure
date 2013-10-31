@@ -6,10 +6,10 @@
 var config = require('./config/config.json');
 var express = require('express');
 //var routes = require('./routes');
-var http = require('http');
+var https = require('https');
 var path = require('path');
 var flash = require('connect-flash');
-
+var fs = require('fs');
 var app = express();
 
 // all environments
@@ -44,7 +44,11 @@ app.post('/confirm.html', auth.confirm);
 app.get('/home.html', bbs.checkLoggedIn, bbs.index);
 app.post('/home.html', bbs.post);
 
+var opts = {
+    key : fs.readFileSync('./config/key.pem'),
+    cert : fs.readFileSync('./config/cert.pem')
+};
 
-http.createServer(app).listen(app.get('port'), function(){
+https.createServer(opts, app).listen(app.get('port'), function(){
     console.log('Express server listening on port ' + app.get('port'));
 });
