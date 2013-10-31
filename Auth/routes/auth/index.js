@@ -65,29 +65,12 @@ exports.login = function (req, res) {
             req.flash('error', 'ログイン情報が不正デス');
             return res.redirect('/login.html');
         }
-        //TODO
-        console.log(result);
+        delete req.form_info;
         req.session.user = result;
         return res.redirect('/home.html');
     });
 };
 
-/**
- * ホーム画面へレンダリングする関数
- * セッションがなければログイン画面へリダイレクト
- * @param {Object} req
- * @param {Object} res
- */
-/*
-exports.getHome = function (req, res) {
-    if (req.session.user) {
-        var user_info = req.session.user || {name : '', mail : '',password : ''};
-        res.render('home', {user :user_info});
-    } else {
-        res.redirect('/login.html');
-    }
-};
-*/
 /**
  * ログアウトする関数
  * ログアウトするとログイン画面へリダイレクト
