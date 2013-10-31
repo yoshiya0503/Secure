@@ -10,14 +10,12 @@ var crypto = require('crypto');
  * post_table schema
  * id int(11) uniq auto_increment primary
  * user_id int(11)
- * name varchar
  * body varchar
  */
 
 function BbsService(){}
 
 module.exports = new BbsService();
-
 
 //TODO ただのセレクト文の場合に第二引数をどうすればいいかわからないので一旦放置
 /**

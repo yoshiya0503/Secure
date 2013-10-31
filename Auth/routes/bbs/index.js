@@ -31,7 +31,7 @@ exports.index = function(req, res) {
         if(err) {
             //TODO posts取得時のエラー処理
         };
-        return res.render('/bbs/index', { posts : posts});
+        return res.render('/bbs/index.html', { posts : posts});
     });
 };
 
