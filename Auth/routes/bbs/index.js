@@ -6,6 +6,13 @@
 
 var bbsService = require('../../models/bbs');
 
+/**
+ * bbsページにアクセスする、bbsに投稿する前にログインしているかチェックする処理
+ * @param req
+ * @param res
+ * @param next
+ * @returns {*}
+ */
 exports.checkLoggedIn = function (req, res, next) {
     if(!req.session.user) {
         req.flash('error', 'ログインしてからアクセスしてください。');
@@ -14,6 +21,11 @@ exports.checkLoggedIn = function (req, res, next) {
     return next();
 };
 
+/**
+ * bbsページ取得処理
+ * @param req
+ * @param res
+ */
 exports.index = function(req, res) {
     bbsService.getPosts(function(err, posts) {
         if(err) {
@@ -23,6 +35,12 @@ exports.index = function(req, res) {
     });
 };
 
+/**
+ * bbsへの投稿処理
+ * @param req
+ * @param res
+ * @returns {*}
+ */
 exports.post = function(req, res) {
     if(!req.body.post) {
         req.flash('error', '本文が記載されていません');
