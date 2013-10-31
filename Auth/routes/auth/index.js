@@ -115,6 +115,11 @@ exports.getRegisterform = function (req, res) {
  * @param {Object} res
  */
 exports.regist = function (req, res) {
+    //内容がないようの時は注意する
+    if (!req.body.user.mail || !req.body.user.name || !req.body.user.password) {
+        req.flash('error', 'フォームを全部うめめてください');
+        return res.redirect('/register.html');
+    }
     authService.validateRegist(req.body.user, function (result) {
         if (result.length !== 0) {
             req.flash('error', 'そのメールアドレスは重複しています');
