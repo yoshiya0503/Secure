@@ -33,7 +33,7 @@ app.get('/', auth.getLoginform);
 app.get('/login.html', auth.getLoginform);
 app.post('/login.html', auth.login);
 app.del('/logout.html', auth.logout);
-app.get('/login_result.html', auth.getHome);
+//app.get('/login_result.html', auth.getHome);
 
 app.get('/register.html', auth.getRegisterform);
 app.post('/register.html', auth.regist);
@@ -41,8 +41,8 @@ app.post('/register.html', auth.regist);
 app.get('/confirm.html', auth.getConfirmform);
 app.post('/confirm.html', auth.confirm);
 
-app.get('/bbs.html', bbs.checkLoggedIn, bbs.index);
-app.post('/bbs.html', bbs.post);
+app.get('/home.html', bbs.checkLoggedIn, bbs.index);
+app.post('/home.html', bbs.post);
 
 
 http.createServer(app).listen(app.get('port'), function(){

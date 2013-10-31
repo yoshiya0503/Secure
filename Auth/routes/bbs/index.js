@@ -31,7 +31,7 @@ exports.index = function(req, res) {
         if(err) {
             //TODO posts取得時のエラー処理
         };
-        return res.render('/bbs/index.html', { posts : posts});
+        return res.render('home', { posts : posts});
     });
 };
 
@@ -44,7 +44,7 @@ exports.index = function(req, res) {
 exports.post = function(req, res) {
     if(!req.body.post) {
         req.flash('error', '本文が記載されていません');
-        return res.redirect('/bbs/index');
+        return res.redirect('/home.html');
     }
     var postData = req.body.post;
     postData.user = req.session.user;
@@ -53,7 +53,6 @@ exports.post = function(req, res) {
            //TODO post失敗時のエラー処理
        }
        //TODO できたら、リダイレクトして再読み込みではない方がいい
-       return res.redirect('/bbs.html');
+       return res.redirect('/home.html');
     });
-
 };

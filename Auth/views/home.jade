@@ -2,13 +2,21 @@ extends header
 
 block content
 
-    name = user.name
-    password = user.password
+    //name = user.name
+    //password = user.password
 
     h1 Login Middleware
     h2 ようこそエテ公へ
     form(method='POST', action='/logout.html')
             input(name='_method', type='hidden', value='DELETE')
-            p ログインユーザー : #{name}
+            p ログインユーザー : ここに名前
                 a(href='javascript:', onClick='forms[0].submit()') [ログアウト]
  
+    table(border=1)
+        for post in posts
+            name = post.name
+            text = post.body
+            tr 
+                th #{name}
+            tr
+                td #{text}

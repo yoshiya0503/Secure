@@ -28,7 +28,7 @@ exports.getLoginform = function (req, res) {
     console.log(req.session);
     authService.validateLogin(user_info, function (valid) {
         if (valid) {
-            return res.redirect('/login_result.html');
+            return res.redirect('/home.html');
         }
         return res.render('auth', {user : user_info, message : message});
     });
@@ -66,7 +66,7 @@ exports.login = function (req, res) {
             req.flash('error', 'ログイン情報が不正デス');
             return res.redirect('/login.html');
         }
-        return res.redirect('/login_result.html');
+        return res.redirect('/home.html');
     });
 };
 
